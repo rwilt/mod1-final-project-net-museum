@@ -7,5 +7,10 @@ gem "sqlite3", '~> 1.3.6'
 gem "pry"
 gem "require_all"
 gem "faker"
+<<<<<<< HEAD
 gem 'rest-client'
 gem 'json'
+=======
+gem 'asciiart'
+gem 'rmagick'
+>>>>>>> d54d11e222c8b7728e5567cff1252c8ba4b81874
