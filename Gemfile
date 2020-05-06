@@ -9,3 +9,5 @@ gem "require_all"
 gem "faker"
 gem 'rest-client'
 gem 'json'
+gem 'rmagick'
+gem 'asciiart'
