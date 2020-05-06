@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_05_150308) do
+ActiveRecord::Schema.define(version: 2020_05_04_215051) do
 
   create_table "artists", force: :cascade do |t|
     t.string "artist_name"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2020_05_05_150308) do
     t.string "department"
     t.string "museum", default: "Metropolitan Museum of Art, New York, NY"
     t.string "image"
+    t.integer "object_id"
     t.integer "artist_id"
   end
 

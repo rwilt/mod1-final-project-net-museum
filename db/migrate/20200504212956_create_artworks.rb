@@ -5,6 +5,7 @@ class CreateArtworks < ActiveRecord::Migration[5.2]
       t.string :department
       t.string :museum, default: "Metropolitan Museum of Art, New York, NY"
       t.string :image
+      t.integer :object_id
       t.integer :artist_id
   end
   end

@@ -1,6 +1,6 @@
-# require 'pry'
-# require 'rest-client'
-# require 'json'
+require 'pry'
+require 'rest-client'
+require 'json'
 
 # # response = RestClient.get("https://collectionapi.metmuseum.org/public/collection/v1/search?&hasImages=true&q=All?departmentId=5&7&8&21&19&9&14&15&6&11?")
 # # metData = JSON.parse(response)
@@ -49,38 +49,55 @@
 # #     end
    
 # # #  puts finalHash
-
-# response = RestClient.get("https://collectionapi.metmuseum.org/public/collection/v1/search?&hasImages=true&q=All?departmentId=5&6&7&8&9&10&11&13&14&15&17&19&21?")
-# $metData = JSON.parse(response)
-
+# https://collectionapi.metmuseum.org/public/collection/v1/search?q=*
+#FINAL URL TO SEED 
 
 
-# def object_id_joiner
-# url = "https://collectionapi.metmuseum.org/public/collection/v1/objects/"
-# urlArray = []
-# $metData["objectIDs"].each do |e|
-# urlArray.push(url.to_s + e.to_s)
-# end
-# urlArray
-# end
+def object_id_joiner
+response = RestClient.get("https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId=11&15&19&21&6q=*")
+metData = JSON.parse(response)
+url = "https://collectionapi.metmuseum.org/public/collection/v1/objects/"
+urlArray = []
+metData["objectIDs"].each do |e|
+urlArray.push(url.to_s + e.to_s)
+end
+urlArray.slice!(0,2)
+urlArray
+end
 
-# # object_id_joiner
 
-# finalHash =[]
-#     object_id_joiner.each do |e|
-#     response = RestClient.get(e)
-#     data = JSON.parse(response)
-#     finalHash.push(data)
-#     end
-   
-# #  finalHash
 
-#  finalHash.each do |artist_hash|
-#   Artist.create(artist_name:artist_hash["artistDisplayName"])
-#   Artwork.create(title: artist_hash["title"],image: artist_hash["primaryImage"], department: artist_hash["department"])
 
-#    end
+def finalHash
+    finalHash =[]
+    object_id_joiner.each do |e|
+    response = RestClient.get(e)
+    data = JSON.parse(response)
+    finalHash.push(data)
+    end
+    finalHash
+  
+end
+
+
+ finalHash.each do |artist_hash|
+    if artist_hash["artistDisplayName"] == nil
+         next
+    end
+    
+    if (!artist_hash["artistDisplayName"])
+    art1 = Artist.create(artist_name:artist_hash["artistDisplayName"]) 
+    else 
+    next
+    end 
+    if (!artist_hash["objectID"])
+    Artwork.create(title: artist_hash["title"],image: artist_hash["primaryImage"], department: artist_hash["department"], artist: art1, object_id: artist_hash["objectID"])
+    else
+        next
+    end
+end
 
 
 rosiew = User.create(name: "Rosie", bio: "My favorite department is Egyptian Art, and I love visiting the Cloisters. My favorite artists are Raymond Pettibon and Carrie Mae Weems.")
 keanur = User.create(name: "Keanu", bio: "When I'm not at the Continental, the Met is my favorite place to be.")
+
