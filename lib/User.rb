@@ -8,19 +8,50 @@ class User < ActiveRecord::Base
 
     def menu_and_choices
         system("clear")
-        puts Interface.menu 
+        puts User.menu 
         puts choices
     end
 
+    
+
+def self.menu
+puts ""
+puts ""
+puts ""
+  puts "**************************************************************************"
+  puts ""
+    $menu_response =  @@prompt.select("What would you like to do?") do |menu|
+            menu.choice 'Search by Artist Name', 'search artists'
+            menu.choice 'Search by Artwork Name ', 'search artworks'
+            menu.choice 'Search by Department', 'search departments'
+
+
+            menu.choice 'Create a list of favorites', 'create favorites'
+            menu.choice 'View and Edit your list of favorites ', 'view list'
+
+ 
+        menu.choice 'What’s on view: see today’s highlighted piece', 'random piece'
+        menu.choice 'Overwhelmed? Let us get you started (show 10 random artists)', 'random artists'
+        
+
+        menu.choice 'Learn more about the Net museum', 'about'
+        menu.choice 'Account Settings', 'my account'
+
+
+        menu.choice 'Exit', "exit"
+     end
+end 
     def self.username
-        puts "Before you begin your tour, please tell us your name:"
-        username = gets.chomp.strip.strip
+        puts ""
+        puts ""
+        pastel = Pastel.new
+        username = @@prompt.ask(pastel.cyan("Before you begin your tour, please tell us your name:")).strip
          
         if User.find_by(name: username)
             puts ""
             puts "Welcome back, #{username}! What would you like to do?"
             sleep(1)
-            puts Interface.menu 
+            puts User.menu 
             user = User.find_by(name:username)
         puts user.choices #or use TTY prompt 
         else 
@@ -36,13 +67,13 @@ class User < ActiveRecord::Base
         sleep(1.5)
         puts "Here’s what you can do with us today:"
         sleep(2)
-        menu_and_choices #or use TTY prompt 
+        puts User.menu 
+        user.choices 
         end 
     end
        
     def choices 
-        answer = gets.chomp.strip.strip
-        case answer 
+        case $menu_response 
         when  "random artists"
             random_artists
         when  "view list"
@@ -59,6 +90,8 @@ class User < ActiveRecord::Base
             my_account
         when "search departments"
             search_dept
+        when "about"
+            about
         when "exit" 
             sleep(1)
             puts ""
@@ -77,6 +110,13 @@ class User < ActiveRecord::Base
         puts "This feature is under construction. Please check back soon!"
     end
 
+    def any_key
+        puts ""
+        ans = @@prompt.ask("Press any key to go back to menu")
+        if ans     
+        menu_and_choices
+        end
+    end
 
     def search_artworks
         system("clear")
@@ -115,9 +155,7 @@ class User < ActiveRecord::Base
         puts "You are viewing #{e.title}. An exquisite work. What do you think?"
         puts ""
         sleep(1)
-        puts "press any key to go back to menu"
-        ans = gets.chomp.strip
-        menu_and_choices
+       any_key
         end
         when "n"
         puts "Ok. Let's try again!"
@@ -160,9 +198,7 @@ class User < ActiveRecord::Base
                 ## randomize the phrases ^ ###
                 sleep(1)
                 puts""
-                puts "press any key to go back to menu"
-                ans = gets.chomp.strip
-                menu_and_choices
+                any_key
             end
         when "view artworks"
             puts "Here are all of the artworks by this artist:"
@@ -184,9 +220,7 @@ class User < ActiveRecord::Base
                         puts ""
                     end
                         sleep(1)
-                        puts "press any key to go back to menu"
-                        ans = gets.chomp.strip
-                        menu_and_choices
+                        any_key
                if ans == "N"
                         puts "Ok. Back to menu!"
                         system("clear")
@@ -319,18 +353,37 @@ def remove_artist
         artist2 = result.artist_name
         ans = Artist.find_by(artist_name:artist2).id
         deletion = self.user_artists.find_by(artist_id:ans)
-        deletion = deletion.destroy.save
+        deletion = deletion.delete.save
+
         puts "You have removed #{artist2}." 
-        puts "Press any key to head back to menu"
-        gets.chomp
-        menu_and_choices
+        any_key
     end
     if yn == "N" || yn == "n"
-        puts "OK. Press any key to head back to menu"
-        gets.chomp
-        menu_and_choices
+       any_key
     end
 end 
+
+def remove_artwork
+    puts ""
+    puts "Which piece would you like to remove?"
+    ans = gets.chomp.strip
+    result = Artwork.find_by(title: ans)
+    puts "You are removing #{result.title}. Confirm? (Y/n)"
+    yn = gets.chomp.strip
+
+    if yn == "Y" || yn == "y"
+        artwork1 = result.title
+        ans = Artwork.find_by(title:artwork1).id
+        deletion = self.user_artworks.find_by(artwork_id:ans)
+        deletion = deletion.delete.save
+        puts "You have removed #{artwork1}." 
+       any_key
+    end
+    if yn == "N" || yn == "n"
+        any_key
+    end
+end 
+
 
 
     def view_my_artworks
@@ -351,18 +404,20 @@ end
         end
         puts "OK. Here's your current list of Artworks:"
         puts ""
+
         self.user_artworks.map do |e|
             puts Artwork.find(e.artwork_id).title
         end
         puts ""
         puts "What would you like to do?"
         puts "('add artwork', 'remove artwork', 'select artwork')"
-        response = gets.chomp.strip.strip
+        response = gets.chomp.strip
         case response
         when "add artwork"
             add_artwork
-        end   
-    
+        when "remove artwork"
+            remove_artwork
+        end    
      ###add option to go back to menu, or CRUD this list####
     end
 
@@ -373,17 +428,22 @@ end
     sleep(1)
     piece = Artwork.all.collect do |e|
         e.image
-    end.sample.first
-
+    end.sample
     path = download_image(piece)
     print print_pic(path)
+
+    puts ""
+    puts "Wow - this one really makes you think..."
+    sleep(1)
+    puts ""
+    any_key
   end
 
     def random_artists
         ansArr = [] 
         system("clear")
         sleep(2)
-        puts "Here are 10 Artists to get you started!"
+        puts "Here are 10 artists to get you started on your search!"
         sleep(1)
         puts ""
          Artist.all.each do |e|
@@ -392,12 +452,12 @@ end
             if !ansArr.include?(e.artist_name)
              ansArr.push(e.artist_name)
              ansArr.sort!
-            else
-                next
             end
         end     
     puts ansArr.sample(10)
-    ##include option to go back to menu, or work with this list (edit, select an artist, etc.)
+    puts ""
+    sleep(1)
+  any_key
     end 
 
     def search_suggest_random
@@ -453,15 +513,13 @@ end
     def add_artist
         system("clear")
         puts "Enter the artist name to add to your list:"
-        artist = gets.chomp.strip.strip
+        artist = gets.chomp.strip
         artist1 = Artist.find_by(artist_name: artist)
         if self.user_artists.count > 10
             puts "Sorry, you can't add any more artists (max. 10)"
             puts ""
             sleep(1)
-            puts "Press any key to return to menu."
-            gets.chomp.strip.strip
-            menu_and_choices
+           any_key
             if !artist1
                 puts "Sorry - we can't find that artist."
                 sleep(1)
@@ -471,8 +529,10 @@ end
             end
         else
             result = UserArtist.create(artist:artist1, user: self)
-        puts "Youve added #{artist1.artist_name} to your list."
+        puts "You've added #{artist1.artist_name} to your list."
+        puts ""
         sleep(1)
+        any_key
         end
         
         ###add artist_list method###
@@ -488,7 +548,10 @@ end
         puts "Enter the Artwork title to add to your list:"
         artworkans = gets.chomp.strip
         artwork1 = Artwork.find_by(title:artworkans)
-        result = UserArtwork.create(artwork:artwork1, user: self)
+       
+        if self.user_artworks.count > 10
+            puts "Sorry, you can't add any more artworks."
+        else
         if !artwork1
             puts "Sorry - we can't find that artwork."
             sleep(1)
@@ -496,17 +559,12 @@ end
             system("clear")
             add_artwork
         end
-        if self.user_artworks.count > 10
-            puts "Sorry, you can't add any more artworks."
-        else
-       
-        puts "Youve added #{artwork1} to your list."
+        UserArtwork.create(artwork:artwork1, user: self)
+        puts "You've added #{artwork1.title} to your list."
         sleep(1)
-        end
-        puts "Here's your current list of Artworks:"
-        puts ""
-        self.user_artworks.map do |e|
-            puts Artwork.find(e.artwork_id).title
+        puts ""      
+        sleep(1)
+        any_key
         ###add artist_list method###
         # puts "Here's your updated list:"
         # puts ""
@@ -529,49 +587,60 @@ end
         when "view bio"
          my_bio
         when "update bio"
-            puts "Your current bio:"
+          update_bio
+        when "delete bio"
+            self.bio.delete
+            puts "Your bio has been deleted."
             puts ""
-            self.bio
-            puts ""
-
-            puts "Please enter your new bio."
-            ans = gets.chomp.strip
-            new_bio = self.update(bio:ans)
-            puts ""
-            puts "Great! Here's your new bio:"
-            new_bio
+            any_key
         end
+     end 
 
-    end 
         def my_bio
+            ## check for bio and offer to update
             system("clear")
             puts ""
             puts "Here's your bio!"
             puts ""
             puts self.bio
             puts ""
-            sleep(2)
-            puts "return to menu? (Y/n)"
-            ans = gets.chomp.strip
-            case ans 
-            when "Y"
-                system("clear)")
-                menu_and_choices
-            when "n"
-                puts "Sure - make yourself comfortable. Press enter to return."
-                ans = gets.chomp.strip
-            when ans 
-                menu_and_choices
-            end
-             #see your own bio. add methods to update/delete bio.
-         end
-#end of class
+            sleep(1)
+           any_key
+        end
+
+def update_bio
+    puts "Your current bio:"
+    puts ""
+    self.bio
+    puts ""
+
+    puts "Please enter your new bio."
+    ans = gets.chomp.strip
+    self.update(bio:ans)
+    puts ""
+    puts "Great! Bio updated."
+    sleep(1)
+    puts""
+    any_key
 end
 
 
+def about
+    puts  "The Net Museum is proud to present a virtual representation of thousands of pieces of art from around the world. Available to view from the comfort of your own home!  
+    
+    The Net Museum Application was created by me, Rosie Wilt. Director of the Net Museum and student at Flatiron School. 
+
+    This project is powered by the Met Museum’s API. As such, all works on view are property of the Museum and presented here for your enjoyment.   
+    Images are powered by Catpix/RMagick gems. As such, all images will present differently in your Terminal. 
+    Experience the art you know and love in a new way. Discover new works in a format possibly unfamiliar to you. Have fun! 
+    "
+    puts ""
+    sleep(1.5)
+   any_key
+end
 
     
-
+end
 #add_artist example commands:
 #rosie = User.first
 # rosie.add_artist("Anthony van Dyck")

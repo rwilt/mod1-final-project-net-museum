@@ -1,10 +1,11 @@
 require_relative '../config/environment'
-require 'asciiart'
 require 'rmagick'
 require 'catpix'
 require 'tco'
 require 'down'
-require 'tty'
+require 'tty-prompt'
 require 'rubygems/util'
+require 'pastel'
+
 Interface.greeting
 User.username 
