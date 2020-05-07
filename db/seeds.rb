@@ -3,10 +3,12 @@ require 'rest-client'
 require 'json'
 
 
+
 ###THE BELOW  NEEDS TO BE SEEDED IF YOU DONT HAVE ANY ARTISTS OR ARTWORKS#####
 #####################
 def object_id_joiner
 response = RestClient.get("https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId=11&15&19&21&6q=*")
+# a much smaller seed file can be this - but it will only show ONE artist. https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=Auguste%20Renoir 
 metData = JSON.parse(response)
 url = "https://collectionapi.metmuseum.org/public/collection/v1/objects/"
 urlArray = []

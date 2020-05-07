@@ -1,5 +1,5 @@
 
-require 'rmagick'
+# require 'rmagick'
 require 'catpix'
 require 'tco'
 require 'down'

@@ -1,5 +1,5 @@
 require_relative '../config/environment'
-require 'rmagick'
+# require 'rmagick'
 require 'catpix'
 require 'tco'
 require 'down'
