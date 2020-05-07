@@ -7,7 +7,10 @@
 ## organize code by group (all search methods, creation methods, etc.)
 ## continue to build out under construction features
 ## remove any old notes that are no longer needed
+
+
 ## hi tashawn - global variables are used because of my ruby gems. i will have to work on that later :)
+
 
 class User < ActiveRecord::Base
     has_many :user_artists
