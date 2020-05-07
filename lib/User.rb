@@ -1,4 +1,14 @@
 
+####  to - do:
+## update seed to include more data, without duplicates. currently at almost 1,000 artists and 2,000 artworks!! 
+## but, only includes "european paintings" section of Met.
+## increase accessibility functions 
+## remove all instances of "puts"-ed out methods (bad!!)
+## organize code by group (all search methods, creation methods, etc.)
+## continue to build out under construction features
+## remove any old notes that are no longer needed
+## hi tashawn - global variables are used because of my ruby gems. i will have to work on that later :)
+
 class User < ActiveRecord::Base
     has_many :user_artists
     has_many :user_artworks
@@ -64,6 +74,10 @@ end
         user = User.create(name:username) 
         puts ""
         system("clear")
+        puts ""
+        puts ""
+        puts ""
+
         puts pastel.bold("Welcome #{username}!")
         sleep(1)
         puts "The Net museum is proud to offer you a virtual tour of thousands of pieces of art in our collection."
@@ -130,12 +144,27 @@ end
     def search_artworks
         system("clear")
         sleep(1)
+        pastel = Patel.new
         puts ""
         puts ""
         puts ""
-
+        @@prompt.warn(pastel.bright_blue("
+            █████████             █████                                    █████          █████████                                   █████     
+            ███░░░░░███           ░░███                                    ░░███          ███░░░░░███                                 ░░███      
+           ░███    ░███ ████████  ███████  █████ ███ █████ ██████  ████████ ░███ █████   ░███    ░░░   ██████  ██████  ████████ ██████ ░███████  
+           ░███████████░░███░░███░░░███░  ░░███ ░███░░███ ███░░███░░███░░███░███░░███    ░░█████████  ███░░███░░░░░███░░███░░█████░░███░███░░███ 
+           ░███░░░░░███ ░███ ░░░   ░███    ░███ ░███ ░███░███ ░███ ░███ ░░░ ░██████░      ░░░░░░░░███░███████  ███████ ░███ ░░░███ ░░░ ░███ ░███ 
+           ░███    ░███ ░███       ░███ ███░░███████████ ░███ ░███ ░███     ░███░░███     ███    ░███░███░░░  ███░░███ ░███   ░███  ███░███ ░███ 
+           █████   ██████████      ░░█████  ░░████░████  ░░██████  █████    ████ █████   ░░█████████ ░░██████░░█████████████  ░░██████ ████ █████
+          ░░░░░   ░░░░░░░░░░        ░░░░░    ░░░░ ░░░░    ░░░░░░  ░░░░░    ░░░░ ░░░░░     ░░░░░░░░░   ░░░░░░  ░░░░░░░░░░░░░    ░░░░░░ ░░░░ ░░░░░ 
+                                                                                                                                                 
+                                                                                                                                                 
+                                                                                                                                                 "))
+        
+        puts ""
+        puts ""    
+        sleep(1)                                                                                                                                     
         puts "OK!"
-        sleep(1)
         # puts "Please enter the name of the Artist you are searching for:"
         puts search_suggest_random_artwork
         answer = gets.chomp.strip.strip
@@ -182,10 +211,26 @@ end
         puts ""
         puts ""
         puts ""
+        pastel = Pastel.new
+        @@prompt.warn(pastel.bright_blue("  
+            
+            █████████             █████    ███        █████        █████████                                   █████     
+            ███░░░░░███           ░░███    ░░░        ░░███        ███░░░░░███                                 ░░███      
+           ░███    ░███ ████████  ███████  ████  ████████████     ░███    ░░░   ██████  ██████  ████████ ██████ ░███████  
+           ░███████████░░███░░███░░░███░  ░░███ ███░░░░░███░      ░░█████████  ███░░███░░░░░███░░███░░█████░░███░███░░███ 
+           ░███░░░░░███ ░███ ░░░   ░███    ░███░░█████ ░███        ░░░░░░░░███░███████  ███████ ░███ ░░░███ ░░░ ░███ ░███ 
+           ░███    ░███ ░███       ░███ ███░███ ░░░░███░███ ███    ███    ░███░███░░░  ███░░███ ░███   ░███  ███░███ ░███ 
+           █████   ██████████      ░░█████ ███████████ ░░█████    ░░█████████ ░░██████░░█████████████  ░░██████ ████ █████
+          ░░░░░   ░░░░░░░░░░        ░░░░░ ░░░░░░░░░░░   ░░░░░      ░░░░░░░░░   ░░░░░░  ░░░░░░░░░░░░░    ░░░░░░ ░░░░ ░░░░░ 
+                                                                                                                          
+                                                                                                                          
+                                                                                                                          "))
+        puts ""
+        puts ""            
+        sleep(1)                                                                                                     
         puts "OK!"
-        sleep(1)
         # puts "Please enter the name of the Artist you are searching for:"
-        puts search_suggest_random
+         search_suggest_random
         answer = gets.chomp.strip.strip
         result = Artist.find_by(artist_name: answer)
         if !result 
@@ -235,13 +280,13 @@ end
                     end
                         sleep(1)
                         any_key
+                end
                if ans == "N"
-                        puts "Ok. Back to menu!"
-                        system("clear")
-                        menu_and_choices
+                        "OK!"
+                        any_key
                      end
                 ####when my data seed is correct it will show more than one!!####
-             end
+           
             end
 
         ##### what do you want to do with this result???#####
@@ -296,7 +341,7 @@ end
                     menu_and_choices 
                 end
                 else
-                puts "Add to Artists or Artworks?"
+                puts "Add to Artists or Artworks? ('Artists' or 'Artworks')"
                 answer = gets.chomp.strip.strip 
                     case answer
                     when "Artists"
@@ -319,8 +364,7 @@ end
                 add_artist ##this isnt firing.##
         elsif response == "n" || response == "N"
                 puts "some other time, then." 
-                ####back to menu?######
-                ### HELP. either the code quits the program when i choose yes, or throws an error####
+              any_key
         end
     else 
             puts "Ok. Here's your current list of Artists:"
@@ -451,7 +495,8 @@ end
     print print_pic(path)
 
     puts ""
-    puts "Wow - this one really makes you think..."
+    comments = ["Wow - this one really makes you think...", "An impressive work - wouldn't you agree?", "Such an interesting piece...What do you think it means?", "Masterful!"]
+    puts comments.sample(1)
     sleep(1)
     puts ""
     any_key
@@ -647,18 +692,33 @@ end
 
 def about
     pastel = Pastel.new
-    puts ""
-    puts ""
+
     system("clear")
     puts ""
     puts ""
     puts ""
+    
+    @@prompt.warn(pastel.blue("
+        █████████   █████                          █████       ███████████ █████       ███             ███████████                          ███                     █████   
+        ███░░░░░███ ░░███                          ░░███       ░█░░░███░░░█░░███       ░░░             ░░███░░░░░███                        ░░░                     ░░███    
+       ░███    ░███  ░███████   ██████  █████ ████ ███████     ░   ░███  ░  ░███████   ████   █████     ░███    ░███ ████████   ██████      █████  ██████   ██████  ███████  
+       ░███████████  ░███░░███ ███░░███░░███ ░███ ░░░███░          ░███     ░███░░███ ░░███  ███░░      ░██████████ ░░███░░███ ███░░███    ░░███  ███░░███ ███░░███░░░███░   
+       ░███░░░░░███  ░███ ░███░███ ░███ ░███ ░███   ░███           ░███     ░███ ░███  ░███ ░░█████     ░███░░░░░░   ░███ ░░░ ░███ ░███     ░███ ░███████ ░███ ░░░   ░███    
+       ░███    ░███  ░███ ░███░███ ░███ ░███ ░███   ░███ ███       ░███     ░███ ░███  ░███  ░░░░███    ░███         ░███     ░███ ░███     ░███ ░███░░░  ░███  ███  ░███ ███
+       █████   █████ ████████ ░░██████  ░░████████  ░░█████        █████    ████ █████ █████ ██████     █████        █████    ░░██████      ░███ ░░██████ ░░██████   ░░█████ 
+      ░░░░░   ░░░░░ ░░░░░░░░   ░░░░░░    ░░░░░░░░    ░░░░░        ░░░░░    ░░░░ ░░░░░ ░░░░░ ░░░░░░     ░░░░░        ░░░░░      ░░░░░░       ░███  ░░░░░░   ░░░░░░     ░░░░░  
+                                                                                                                                        ███ ░███                             
+                                                                                                                                       ░░██████                              
+                                                                                                                                        ░░░░░░                               "
 
-    puts  "The Net Museum is proud to present a virtual representation of thousands of pieces of art from around the world. Available to view from the comfort of your own home!  
+    ))
+    puts ""
+    puts ""
+    puts "      The Net Museum is proud to present a virtual representation of thousands of pieces of art from around the world. Available to view from the comfort of your own home!  
     
     The Net Museum Application was created by me, #{pastel.bold("Rosie Wilt")}. Director of the Net Museum and student at Flatiron School. 
 
-    This project is powered by the Met Museum’s API. All works on view are property of the Museum and presented here for your enjoyment.   
+    This project is powered by the Met Museum’s public API. All works on view are property of the Museum and presented here for your enjoyment.   
     Images are powered by Catpix/RMagick gems. Because of this - all images will present differently in your Terminal.
     Experience the art you know and love in a new way. Discover new works in a format possibly unfamiliar to you. Have fun! 
     "

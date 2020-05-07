@@ -98,6 +98,6 @@ end
 end
 
 
-rosiew = User.create(name: "Rosie", bio: "My favorite department is Egyptian Art, and I love visiting the Cloisters. My favorite artists are Raymond Pettibon and Carrie Mae Weems.")
-keanur = User.create(name: "Keanu", bio: "When I'm not at the Continental, the Met is my favorite place to be.")
+# rosiew = User.create(name: "Rosie", bio: "My favorite department is Egyptian Art, and I love visiting the Cloisters. My favorite artists are Raymond Pettibon and Carrie Mae Weems.")
+# keanur = User.create(name: "Keanu", bio: "When I'm not at the Continental, the Met is my favorite place to be.")
 

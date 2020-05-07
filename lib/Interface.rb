@@ -43,10 +43,13 @@ def self.greeting
                                                                                                                                                         ") )                                                                       
                                                                                                                           
                                                                                                                           
-    sleep(2)
+    sleep(1)
     puts ""
+    puts ""  
+    @@prompt.warn(pastel.bright_blue.italic("        Please ensure you are in full-screen mode for best experience."))
     puts ""
-    @@prompt.warn(pastel.bright_blue.bold("        Press -enter- to get started."))
+    sleep(1)
+    @@prompt.warn(pastel.bright_blue.italic("        Press -enter- to get started."))
     gets.chomp 
     
 end 
