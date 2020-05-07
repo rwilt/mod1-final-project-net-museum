@@ -31,7 +31,7 @@ puts ""
 pastel = Pastel.new
   puts "**************************************************************************"
   puts ""
-    $menu_response =  @@prompt.select(pastel.bold("What would you like to do?")) do |menu|
+    $menu_response =  @@prompt.select(pastel.bold("What would you like to do? - scroll through for all options")) do |menu|
             menu.choice 'Search by Artist Name', 'search artists'
             menu.choice 'Search by Artwork Name ', 'search artworks'
             menu.choice 'Search by Department', 'search departments'
@@ -193,7 +193,7 @@ end
         path = download_image(e.image)
         print print_pic(path)
         puts ""
-        puts "You are viewing #{e.title}. An exquisite work. What do you think?"
+        puts "              You are viewing #{e.title}. An exquisite work. What do you think?"
         puts ""
         sleep(1)
        any_key
@@ -253,7 +253,7 @@ end
                 print print_pic(path)
                 puts ""
                 puts ""
-                puts "You are viewing #{e.title}. Lovely, isn't it?"
+                puts "                  You are viewing #{e.title}. Lovely, isn't it?"
                 ## randomize the phrases ^ ###
                 sleep(1)
                 puts""
@@ -274,8 +274,9 @@ end
                     result.artworks.collect do |e|
                         path = download_image(e.image)
                         print print_pic(path)
-                    
-                        puts "You are viewing #{e.title}. A wonderful piece, dont you agree?"
+                        comments = ["One of the highlights in our collection.", "What an interesting perspective - don't you think?", "What do you think the artist was feeling?", "Simply breathtaking."]
+                    puts ""
+                        puts "                       You are viewing #{e.title}. #{comments.sample}"
                         puts ""
                     end
                         sleep(1)
@@ -496,7 +497,7 @@ end
 
     puts ""
     comments = ["Wow - this one really makes you think...", "An impressive work - wouldn't you agree?", "Such an interesting piece...What do you think it means?", "Masterful!"]
-    puts comments.sample(1)
+    puts comments.sample
     sleep(1)
     puts ""
     any_key
