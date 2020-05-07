@@ -18,9 +18,10 @@ def self.menu
 puts ""
 puts ""
 puts ""
+pastel = Pastel.new
   puts "**************************************************************************"
   puts ""
-    $menu_response =  @@prompt.select("What would you like to do?") do |menu|
+    $menu_response =  @@prompt.select(pastel.bold("What would you like to do?")) do |menu|
             menu.choice 'Search by Artist Name', 'search artists'
             menu.choice 'Search by Artwork Name ', 'search artworks'
             menu.choice 'Search by Department', 'search departments'
@@ -40,16 +41,21 @@ puts ""
 
         menu.choice 'Exit', "exit"
      end
+
 end 
     def self.username
         puts ""
         puts ""
         pastel = Pastel.new
-        username = @@prompt.ask(pastel.cyan("Before you begin your tour, please tell us your name:")).strip
+        username = @@prompt.ask(pastel.bright_blue.bold("        Before you begin your tour, please tell us your name:")).strip
          
         if User.find_by(name: username)
+            system("clear")
             puts ""
-            puts "Welcome back, #{username}! What would you like to do?"
+            puts ""
+            puts ""
+
+            puts pastel.bold("Welcome back, #{username}! What would you like to do?")
             sleep(1)
             puts User.menu 
             user = User.find_by(name:username)
@@ -57,7 +63,8 @@ end
         else 
         user = User.create(name:username) 
         puts ""
-        puts "Welcome #{username}!"
+        system("clear")
+        puts pastel.bold("Welcome #{username}!")
         sleep(1)
         puts "The Net museum is proud to offer you a virtual tour of thousands of pieces of art in our collection."
         sleep(1)
@@ -73,6 +80,7 @@ end
     end
        
     def choices 
+        pastel = Pastel.new
         case $menu_response 
         when  "random artists"
             random_artists
@@ -95,7 +103,7 @@ end
         when "exit" 
             sleep(1)
             puts ""
-           puts "Thank you for visiting the NET museum. We hope to see you back soon!"
+           puts pastel.bold("Thank you for visiting the NET museum. We hope to see you back soon!")
         exit
 
         end
@@ -112,7 +120,8 @@ end
 
     def any_key
         puts ""
-        ans = @@prompt.ask("Press any key to go back to menu")
+        pastel = Pastel.new
+        ans = @@prompt.ask(pastel.bold("Press any key to go back to menu"))
         if ans     
         menu_and_choices
         end
@@ -122,6 +131,9 @@ end
         system("clear")
         sleep(1)
         puts ""
+        puts ""
+        puts ""
+
         puts "OK!"
         sleep(1)
         # puts "Please enter the name of the Artist you are searching for:"
@@ -168,6 +180,8 @@ end
         system("clear")
         sleep(1)
         puts ""
+        puts ""
+        puts ""
         puts "OK!"
         sleep(1)
         # puts "Please enter the name of the Artist you are searching for:"
@@ -175,7 +189,7 @@ end
         answer = gets.chomp.strip.strip
         result = Artist.find_by(artist_name: answer)
         if !result 
-            puts "Sorry, we couldn't find that artist. Try again?"
+            puts pastel.bold("Sorry, we couldn't find that artist. Try again?")
             sleep(1)
             puts "press any key to restart search."
             ans = gets.chomp
@@ -337,7 +351,11 @@ end
                 add_artist
             when "remove artists"
                 remove_artist
-            end        
+            when "select artist"
+                puts "Under Construction. Heading back to menu..."
+                sleep(2)
+                menu_and_choices
+            end
     end
 end          ###add option to go back to menu, or CRUD this list####  
     
@@ -605,6 +623,8 @@ end
             puts self.bio
             puts ""
             sleep(1)
+            puts "Wow, you sure have a lot to say!"
+            sleep(1)
            any_key
         end
 
@@ -626,12 +646,20 @@ end
 
 
 def about
+    pastel = Pastel.new
+    puts ""
+    puts ""
+    system("clear")
+    puts ""
+    puts ""
+    puts ""
+
     puts  "The Net Museum is proud to present a virtual representation of thousands of pieces of art from around the world. Available to view from the comfort of your own home!  
     
-    The Net Museum Application was created by me, Rosie Wilt. Director of the Net Museum and student at Flatiron School. 
+    The Net Museum Application was created by me, #{pastel.bold("Rosie Wilt")}. Director of the Net Museum and student at Flatiron School. 
 
-    This project is powered by the Met Museum’s API. As such, all works on view are property of the Museum and presented here for your enjoyment.   
-    Images are powered by Catpix/RMagick gems. As such, all images will present differently in your Terminal. 
+    This project is powered by the Met Museum’s API. All works on view are property of the Museum and presented here for your enjoyment.   
+    Images are powered by Catpix/RMagick gems. Because of this - all images will present differently in your Terminal.
     Experience the art you know and love in a new way. Discover new works in a format possibly unfamiliar to you. Have fun! 
     "
     puts ""

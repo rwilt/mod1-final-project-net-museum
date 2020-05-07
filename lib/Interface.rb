@@ -46,7 +46,7 @@ def self.greeting
     sleep(2)
     puts ""
     puts ""
-    @@prompt.warn(pastel.bright_blue("        Press -enter- to get started."))
+    @@prompt.warn(pastel.bright_blue.bold("        Press -enter- to get started."))
     gets.chomp 
     
 end 
