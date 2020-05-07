@@ -147,7 +147,7 @@ end
     def search_artworks
         system("clear")
         sleep(1)
-        pastel = Patel.new
+        pastel = Pastel.new
         puts ""
         puts ""
         puts ""
