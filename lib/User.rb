@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
     def self.username
         puts "Before you begin your tour, please tell us your name:"
-        username = gets.chomp.strip
+        username = gets.chomp.strip.strip
          
         if User.find_by(name: username)
             puts ""
@@ -29,6 +29,8 @@ class User < ActiveRecord::Base
         puts "Welcome #{username}!"
         sleep(1)
         puts "The Net museum is proud to offer you a virtual tour of thousands of pieces of art in our collection."
+        sleep(1)
+        puts "We have almost 1,000 artists whose work is available to view."
         sleep(1.5)
         puts "We've saved your information so you can start exploring."
         sleep(1.5)
@@ -39,7 +41,7 @@ class User < ActiveRecord::Base
     end
        
     def choices 
-        answer = gets.chomp.strip
+        answer = gets.chomp.strip.strip
         case answer 
         when  "random artists"
             random_artists
@@ -55,8 +57,26 @@ class User < ActiveRecord::Base
             random_piece
         when "my account"
             my_account
+        when "search departments"
+            search_dept
+        when "exit" 
+            sleep(1)
+            puts ""
+           puts "Thank you for visiting the NET museum. We hope to see you back soon!"
+        exit
+
         end
     end               
+
+    def search_dept
+        system("clear")
+        puts ""
+        path = download_image("https://www.gshpinc.com/wp-content/uploads/2018/08/W20-7a.jpg")
+        print print_pic(path)
+        puts ""
+        puts "This feature is under construction. Please check back soon!"
+    end
+
 
     def search_artworks
         system("clear")
@@ -66,8 +86,15 @@ class User < ActiveRecord::Base
         sleep(1)
         # puts "Please enter the name of the Artist you are searching for:"
         puts search_suggest_random_artwork
-        answer = gets.chomp.strip
+        answer = gets.chomp.strip.strip
         result = Artwork.find_by(title: answer)
+        if !result 
+            puts "Sorry, we couldn't find that piece. Try again?"
+            sleep(1)
+            puts "press any key to restart search."
+            ans = gets.chomp
+            search_artworks
+        end
         puts "You've selected #{result.title}."
         search_artworks_helper(answer)
 
@@ -78,7 +105,7 @@ class User < ActiveRecord::Base
         result =  Artwork.where(title:name)
         sleep(1)
         puts "View this piece? (Y/n)"
-        answer = gets.chomp
+        answer = gets.chomp.strip
         case answer
         when "Y"
         result.collect do |e|
@@ -89,7 +116,7 @@ class User < ActiveRecord::Base
         puts ""
         sleep(1)
         puts "press any key to go back to menu"
-        ans = gets.chomp
+        ans = gets.chomp.strip
         menu_and_choices
         end
         when "n"
@@ -107,13 +134,20 @@ class User < ActiveRecord::Base
         sleep(1)
         # puts "Please enter the name of the Artist you are searching for:"
         puts search_suggest_random
-        answer = gets.chomp.strip
+        answer = gets.chomp.strip.strip
         result = Artist.find_by(artist_name: answer)
+        if !result 
+            puts "Sorry, we couldn't find that artist. Try again?"
+            sleep(1)
+            puts "press any key to restart search."
+            ans = gets.chomp
+            search_artists
+        end
         puts "You've selected #{result.artist_name}."
         puts ""
         puts "What would you like to do?"
         puts "('view art', 'view artworks')"
-        answer = gets.chomp.strip
+        answer = gets.chomp.strip.strip
         case answer
         when "view art"
             system("clear")
@@ -124,6 +158,11 @@ class User < ActiveRecord::Base
                 puts ""
                 puts "You are viewing #{e.title}. Lovely, isn't it?"
                 ## randomize the phrases ^ ###
+                sleep(1)
+                puts""
+                puts "press any key to go back to menu"
+                ans = gets.chomp.strip
+                menu_and_choices
             end
         when "view artworks"
             puts "Here are all of the artworks by this artist:"
@@ -132,9 +171,11 @@ class User < ActiveRecord::Base
                 puts e.title
                 puts ""
             end
+           
                 puts "view? (Y/N)"
-                ans = gets.chomp
+                ans = gets.chomp.strip
                if ans == "Y"
+                system("clear")
                     result.artworks.collect do |e|
                         path = download_image(e.image)
                         print print_pic(path)
@@ -144,7 +185,7 @@ class User < ActiveRecord::Base
                     end
                         sleep(1)
                         puts "press any key to go back to menu"
-                        ans = gets.chomp
+                        ans = gets.chomp.strip
                         menu_and_choices
                if ans == "N"
                         puts "Ok. Back to menu!"
@@ -184,7 +225,7 @@ class User < ActiveRecord::Base
     puts "Great!"
     sleep(1)
     puts "View Artists or Artworks?"
-    response = gets.chomp.strip
+    response = gets.chomp.strip.strip
     case response
     when "Artists"
          view_my_artists
@@ -196,7 +237,7 @@ class User < ActiveRecord::Base
     def create_list
             if self.user_artworks.count > 0  || self.user_artists.count > 0
                 puts "You already have a list! View it? (Y/n)"
-                answer = gets.chomp.strip
+                answer = gets.chomp.strip.strip
                 case answer 
                 when "Y"
                     puts view_list
@@ -208,7 +249,7 @@ class User < ActiveRecord::Base
                 end
                 else
                 puts "Add to Artists or Artworks?"
-                answer = gets.chomp.strip 
+                answer = gets.chomp.strip.strip 
                     case answer
                     when "Artists"
                     add_artist
@@ -225,7 +266,7 @@ class User < ActiveRecord::Base
         sleep(1)
     if self.user_artists.count == 0
             puts "Your list is empty! Want to add some artists? (Y/n)"
-            response = gets.chomp.strip
+            response = gets.chomp.strip.strip
         if response == "Y" || response == "y"
                 add_artist ##this isnt firing.##
         elsif response == "n" || response == "N"
@@ -235,39 +276,72 @@ class User < ActiveRecord::Base
         end
     else 
             puts "Ok. Here's your current list of Artists:"
-            puts ""
-            
-            self.user_artists.each do |e|
-                arr = []
-                arr.push(e.artist_id)
-                arr.collect do |a|
-                  finalAns = Artist.find(a).artist_name
-                  print finalAns
-               end
-             
-            #    answer = gets.chomp.strip
+            puts ""         
+
+            def my_current_artists 
+                self.user_artists.map do |e|
+                puts Artist.find(e.artist_id).artist_name
             end
+        end
+
+        my_current_artists
+            # self.user_artists.each do |e|
+            #     arr = []
+            #     arr.push(e.artist_id)
+            #     arr.collect do |a|
+            #     finalAns = Artist.find(a).artist_name
+            #       puts finalAns
+            #    end             
+            #    answer = gets.chomp.strip.strip
+            # end
+
             puts "What would you like to do?"
             puts "('add artist', 'remove artists', 'select artist')"
-            response = gets.chomp.strip
+            response = gets.chomp.strip.strip
             case response
             when "add artist"
                 add_artist
-            end
-            
-        end
-            ###add option to go back to menu, or CRUD this list####  
+            when "remove artists"
+                remove_artist
+            end        
     end
+end          ###add option to go back to menu, or CRUD this list####  
+    
+def remove_artist
+    puts ""
+    puts "Which artist would you like to remove?"
+    ans = gets.chomp.strip
+    result = Artist.find_by(artist_name: ans)
+    puts "You are removing #{result.artist_name}. Confirm? (Y/n)"
+    yn = gets.chomp.strip
+
+    if yn == "Y" || yn == "y"
+        artist2 = result.artist_name
+        ans = Artist.find_by(artist_name:artist2).id
+        deletion = self.user_artists.find_by(artist_id:ans)
+        deletion = deletion.destroy.save
+        puts "You have removed #{artist2}." 
+        puts "Press any key to head back to menu"
+        gets.chomp
+        menu_and_choices
+    end
+    if yn == "N" || yn == "n"
+        puts "OK. Press any key to head back to menu"
+        gets.chomp
+        menu_and_choices
+    end
+end 
+
 
     def view_my_artworks
         system("clear")
         sleep(1)
         if self.user_artworks.count == 0
             puts "Your list is empty! Want to add some artworks? (Y/n)"
-            response = gets.chomp
+            response = gets.chomp.strip
             case response
             when "Y"
-                puts add_artwork
+                add_artwork
             when "n" || "N"
                 puts "Some other time, then."
                 puts "Returning to menu..."
@@ -277,9 +351,18 @@ class User < ActiveRecord::Base
         end
         puts "OK. Here's your current list of Artworks:"
         puts ""
-        self.user_artworks.each do |e|
-            puts e.artwork_id.title
+        self.user_artworks.map do |e|
+            puts Artwork.find(e.artwork_id).title
         end
+        puts ""
+        puts "What would you like to do?"
+        puts "('add artwork', 'remove artwork', 'select artwork')"
+        response = gets.chomp.strip.strip
+        case response
+        when "add artwork"
+            add_artwork
+        end   
+    
      ###add option to go back to menu, or CRUD this list####
     end
 
@@ -370,19 +453,66 @@ class User < ActiveRecord::Base
     def add_artist
         system("clear")
         puts "Enter the artist name to add to your list:"
-        artist = gets.chomp
+        artist = gets.chomp.strip.strip
         artist1 = Artist.find_by(artist_name: artist)
-        result = UserArtist.create(artist:artist1, user: self)
-        puts "Youve added #{artist1} to your list."
+        if self.user_artists.count > 10
+            puts "Sorry, you can't add any more artists (max. 10)"
+            puts ""
+            sleep(1)
+            puts "Press any key to return to menu."
+            gets.chomp.strip.strip
+            menu_and_choices
+            if !artist1
+                puts "Sorry - we can't find that artist."
+                sleep(1)
+                puts "Let's try again..." 
+                system("clear")
+                add_artist
+            end
+        else
+            result = UserArtist.create(artist:artist1, user: self)
+        puts "Youve added #{artist1.artist_name} to your list."
         sleep(1)
+        end
+        
         ###add artist_list method###
         # puts "Here's your updated list:"
         # puts ""
         # puts  artist_list
-        if self.user_artists.count > 10
-            puts "Sorry, you can't add any more artists."
-        end
+     
     end 
+
+
+    def add_artwork
+        system("clear")
+        puts "Enter the Artwork title to add to your list:"
+        artworkans = gets.chomp.strip
+        artwork1 = Artwork.find_by(title:artworkans)
+        result = UserArtwork.create(artwork:artwork1, user: self)
+        if !artwork1
+            puts "Sorry - we can't find that artwork."
+            sleep(1)
+            puts "Let's try again..." 
+            system("clear")
+            add_artwork
+        end
+        if self.user_artworks.count > 10
+            puts "Sorry, you can't add any more artworks."
+        else
+       
+        puts "Youve added #{artwork1} to your list."
+        sleep(1)
+        end
+        puts "Here's your current list of Artworks:"
+        puts ""
+        self.user_artworks.map do |e|
+            puts Artwork.find(e.artwork_id).title
+        ###add artist_list method###
+        # puts "Here's your updated list:"
+        # puts ""
+        # puts  artist_list
+      end 
+    end
 
     def all_departments
         Artwork.all.collect do |e|
@@ -394,7 +524,7 @@ class User < ActiveRecord::Base
         system("clear")
         puts "What would you like to do?"
         puts "('view bio', 'update bio', 'delete bio')"
-        ans = gets.chomp
+        ans = gets.chomp.strip
         case ans
         when "view bio"
          my_bio
@@ -405,7 +535,7 @@ class User < ActiveRecord::Base
             puts ""
 
             puts "Please enter your new bio."
-            ans = gets.chomp
+            ans = gets.chomp.strip
             new_bio = self.update(bio:ans)
             puts ""
             puts "Great! Here's your new bio:"
@@ -422,14 +552,14 @@ class User < ActiveRecord::Base
             puts ""
             sleep(2)
             puts "return to menu? (Y/n)"
-            ans = gets.chomp
+            ans = gets.chomp.strip
             case ans 
             when "Y"
                 system("clear)")
                 menu_and_choices
             when "n"
                 puts "Sure - make yourself comfortable. Press enter to return."
-                ans = gets.chomp
+                ans = gets.chomp.strip
             when ans 
                 menu_and_choices
             end

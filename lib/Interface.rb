@@ -37,6 +37,7 @@ def self.menu
         puts "* Learn more about the Net museum ('about')"
         puts "* Account Settings ('my account')"
 
+        puts "*Exit"
 end 
 
 
