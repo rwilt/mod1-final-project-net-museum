@@ -4,6 +4,7 @@ require 'rmagick'
 require 'catpix'
 require 'tco'
 require 'down'
-
+require 'tty'
+require 'rubygems/util'
 Interface.greeting
 User.username 

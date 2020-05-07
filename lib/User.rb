@@ -4,6 +4,13 @@ class User < ActiveRecord::Base
     has_many :user_artworks
     has_many :artworks, through: :user_artworks
     has_many :artists, through: :user_artists
+    @@prompt = TTY::Prompt.new
+
+    def menu_and_choices
+        system("clear")
+        puts Interface.menu 
+        puts choices
+    end
 
     def self.username
         puts "Before you begin your tour, please tell us your name:"
@@ -27,8 +34,7 @@ class User < ActiveRecord::Base
         sleep(1.5)
         puts "Here’s what you can do with us today:"
         sleep(2)
-        puts Interface.menu 
-        puts user.choices #or use TTY prompt 
+        menu_and_choices #or use TTY prompt 
         end 
     end
        
@@ -41,12 +47,14 @@ class User < ActiveRecord::Base
             self.view_list
         when "search artists"
             search_artists
-        when "search artwork"
+        when "search artworks"
             search_artworks
         when "create favorites"
             create_list
         when "random piece"
             random_piece
+        when "my account"
+            my_account
         end
     end               
 
@@ -57,36 +65,37 @@ class User < ActiveRecord::Base
         puts "OK!"
         sleep(1)
         # puts "Please enter the name of the Artist you are searching for:"
-        puts search_suggest_random
+        puts search_suggest_random_artwork
         answer = gets.chomp.strip
         result = Artwork.find_by(title: answer)
         puts "You've selected #{result.title}."
-        puts ""
-        puts "Which piece do you want to view?"
-        answer = gets.chomp.strip
         search_artworks_helper(answer)
-   
 
         ##### what do you want to do with this result???#####
     end
 
     def search_artworks_helper(name)
         result =  Artwork.where(title:name)
-        puts "You've chosen #{result}."
         sleep(1)
-        puts "View this piece?"
+        puts "View this piece? (Y/n)"
         answer = gets.chomp
         case answer
-        when "yes"
-        result.image.collect do |e|
-        path = download_image(e)
+        when "Y"
+        result.collect do |e|
+        path = download_image(e.image)
         print print_pic(path)
-        puts "You are viewing #{e.title} by #{e.artist_name}. Lovely, isn't it?"
+        puts ""
+        puts "You are viewing #{e.title}. An exquisite work. What do you think?"
+        puts ""
+        sleep(1)
+        puts "press any key to go back to menu"
+        ans = gets.chomp
+        menu_and_choices
         end
-        when "no"
+        when "n"
         puts "Ok. Let's try again!"
-        Interface.menu
-        choices
+        system("clear")
+        menu_and_choices
         end
     end
  
@@ -107,10 +116,14 @@ class User < ActiveRecord::Base
         answer = gets.chomp.strip
         case answer
         when "view art"
+            system("clear")
                 result.artworks.collect do |e|
                 path = download_image(e.image)
                 print print_pic(path)
-                puts "You are viewing #{e.title} by #{e.artist_name}. Lovely, isn't it?"
+                puts ""
+                puts ""
+                puts "You are viewing #{e.title}. Lovely, isn't it?"
+                ## randomize the phrases ^ ###
             end
         when "view artworks"
             puts "Here are all of the artworks by this artist:"
@@ -125,13 +138,18 @@ class User < ActiveRecord::Base
                     result.artworks.collect do |e|
                         path = download_image(e.image)
                         print print_pic(path)
+                    
+                        puts "You are viewing #{e.title}. A wonderful piece, dont you agree?"
+                        puts ""
                     end
-                        puts "You are viewing #{e.title} by #{e.artist_name}. A wonderful piece, dont you agree?"
+                        sleep(1)
+                        puts "press any key to go back to menu"
+                        ans = gets.chomp
+                        menu_and_choices
                if ans == "N"
                         puts "Ok. Back to menu!"
                         system("clear")
-                        Interface.menu
-                        user.choices
+                        menu_and_choices
                      end
                 ####when my data seed is correct it will show more than one!!####
              end
@@ -140,24 +158,25 @@ class User < ActiveRecord::Base
         ##### what do you want to do with this result???#####
         end
 
-    def download_image(url)
-        temp = Down.download(url)
-        temp.path
-    end
-    def print_pic(path)
-        options = {      
-            :limit_x => 1.0,
-            :limit_y => 0.0,
-            :center_x => false,
-            :center_y => false,
-            :bg => "black",
-            :bg_fill => false,
-            :resolution => "high"
-        }
-        img = Catpix.print_image(path,options)
-        final_img = Magick::Image::read(img)
-        final_img.resize_to_fit(10,2)
-    end
+        def download_image(url)
+            temp = Down.download(url)
+            temp.path
+        end
+        def print_pic(path)
+            options = {      
+                :limit_x => 1.0,
+                :limit_y => 1.0,
+                :center_x => true,
+                :center_y => true,
+                :bg => "black",
+                :bg_fill => false,
+                :resolution => "high"
+            }
+            img = Catpix.print_image(path,options)
+            # final_img = Magick::Image::read(img)
+            # final_img.resize_to_fit(10,2)
+        end
+       
    
     def view_list
     system("clear")
@@ -185,8 +204,7 @@ class User < ActiveRecord::Base
                     puts "OK. Back to the menu!"
                     sleep(1)
                     system("clear")
-                    puts Interface.menu
-                    puts User.choices 
+                    menu_and_choices 
                 end
                 else
                 puts "Add to Artists or Artworks?"
@@ -254,7 +272,7 @@ class User < ActiveRecord::Base
                 puts "Some other time, then."
                 puts "Returning to menu..."
                 system("clear")
-                Interface.menu
+                menu_and_choices
              end
         end
         puts "OK. Here's your current list of Artworks:"
@@ -303,7 +321,6 @@ class User < ActiveRecord::Base
             ansArr = [] 
             sleep(1)
             puts "Here are some search suggestions.."
-            puts "Please enter your search:"
             puts ""
              Artist.all.each do |e|
                 #using this conditional because right now my seed data has duplicates
@@ -314,15 +331,35 @@ class User < ActiveRecord::Base
                 else
                     next
                 end
-            end     
+            end 
         puts ansArr.sample(4)
+        puts ""
+        puts "Please enter your search:"
         ##include option to go back to menu, or work with this list (edit, select an artist, etc.)
     end 
 
-    def my_bio
-       puts self.bio
-        #see your own bio. add methods to update/delete bio.
+
+    def search_suggest_random_artwork
+        ansArr = [] 
+        sleep(1)
+        puts "Here are some search suggestions.."
+        puts ""
+         Artwork.all.each do |e|
+            #using this conditional because right now my seed data has duplicates
+            #ideal to remove and just show the list of artists normally.
+            if !ansArr.include?(e.title)
+             ansArr.push(e.title)
+             ansArr.sort!
+            else
+                next
+            end
+        end   
+        puts ansArr.sample(4)
+        puts ""
+        puts "Please enter your search:"
     end
+
+  
 
     def artwork_list
         self.user_artworks.each do |e|
@@ -353,6 +390,51 @@ class User < ActiveRecord::Base
         end
     end
 
+    def my_account
+        system("clear")
+        puts "What would you like to do?"
+        puts "('view bio', 'update bio', 'delete bio')"
+        ans = gets.chomp
+        case ans
+        when "view bio"
+         my_bio
+        when "update bio"
+            puts "Your current bio:"
+            puts ""
+            self.bio
+            puts ""
+
+            puts "Please enter your new bio."
+            ans = gets.chomp
+            new_bio = self.update(bio:ans)
+            puts ""
+            puts "Great! Here's your new bio:"
+            new_bio
+        end
+
+    end 
+        def my_bio
+            system("clear")
+            puts ""
+            puts "Here's your bio!"
+            puts ""
+            puts self.bio
+            puts ""
+            sleep(2)
+            puts "return to menu? (Y/n)"
+            ans = gets.chomp
+            case ans 
+            when "Y"
+                system("clear)")
+                menu_and_choices
+            when "n"
+                puts "Sure - make yourself comfortable. Press enter to return."
+                ans = gets.chomp
+            when ans 
+                menu_and_choices
+            end
+             #see your own bio. add methods to update/delete bio.
+         end
 #end of class
 end
 
