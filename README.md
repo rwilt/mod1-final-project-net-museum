@@ -44,9 +44,11 @@ Create and update a list of your favorite artists and pieces. View highlights fr
 The Net museum is an app which allows you to browse artworks from the <a href="https://metmuseum.github.io/">Met Museum API</a> in your terminal.
 You can search by artist and artwork to find new pieces - and keep track of your favorite artists and artworks. 
 
-The app will also randomly suggest search terms to you every time to aid you in your search (Do you <i>really</i> know who Hans Holbein the Younger is?)
+The app will also randomly suggest search terms to you every time to aid you in your search 
 
-Still stuck? With almost 1,000 artists in the Net museum - you may not know where to get started. Use the search suggestion feature or visit the "Overwhelmed?" section for a little direction. 
+Still stuck? With almost 1,000 artists in the Net museum - you may not know where to get started.(Be honest, have you <i>ever</i> heard of Hans Holbein the Younger?)
+
+ Use the search suggestion feature or visit the "Overwhelmed?" section for a little direction. 
 
 Just want to skip the search and see some art? Cool! Visit what's on view and the Net will randomly select a work to show you.
 
