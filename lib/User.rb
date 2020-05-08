@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
         puts choices
     end
 
-    
+
 
 def self.menu
 puts ""

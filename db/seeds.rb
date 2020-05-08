@@ -4,8 +4,8 @@ require 'json'
 
 
 
-###THE BELOW  NEEDS TO BE SEEDED IF YOU DONT HAVE ANY ARTISTS OR ARTWORKS#####
-#####################
+# ###THE BELOW  NEEDS TO BE SEEDED IF YOU DONT HAVE ANY ARTISTS OR ARTWORKS#####
+# #####################
 def object_id_joiner
 response = RestClient.get("https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId=11&15&19&21&6q=*")
 # a much smaller seed file can be this - but it will only show ONE artist. https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=Auguste%20Renoir 
@@ -19,6 +19,7 @@ urlArray.slice!(0,2)
 urlArray
 end
 
+# object_id_joiner
 
 def finalHash
     finalHash =[]
@@ -31,18 +32,16 @@ def finalHash
   
 end
 
+# finalHash
 
  finalHash.each do |artist_hash|
-    if artist_hash["artistDisplayName"] == nil
-         next
-    end
-    
-    if (!artist_hash["artistDisplayName"])
+
+    if (artist_hash["artistDisplayName"])
     art1 = Artist.create(artist_name:artist_hash["artistDisplayName"]) 
     else 
     next
     end 
-    if (!artist_hash["objectID"])
+    if (artist_hash["objectID"])
     Artwork.create(title: artist_hash["title"],image: artist_hash["primaryImage"], department: artist_hash["department"], artist: art1, object_id: artist_hash["objectID"])
     else
         next
@@ -52,5 +51,3 @@ end
 
 # rosiew = User.create(name: "Rosie", bio: "My favorite department is Egyptian Art, and I love visiting the Cloisters. My favorite artists are Raymond Pettibon and Carrie Mae Weems.")
 # keanur = User.create(name: "Keanu", bio: "When I'm not at the Continental, the Met is my favorite place to be.")
-
-
