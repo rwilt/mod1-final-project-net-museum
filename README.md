@@ -1,6 +1,6 @@
 
 <h1><b>The NET Museum </b></h1>
-<i><h3>A Command Line Art Gallery</i><h3>
+<i><h3>A Command Line Art Gallery</i></h3>
 
 
 Tired of slogging up to Museum Mile on the subway? Stuck inside due to COVID-19? Want to experience art in a new and exciting way? The NET museum is here for you! 
