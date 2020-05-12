@@ -22,7 +22,7 @@ Create and update a list of your favorite artists and pieces. View highlights fr
 <li>gem 'rmagick'</li>
 <li>gem 'catpix'</li>
 <li>gem 'tco'</li>
-<li>gem 'down'<li>
+<li>gem 'down'</li>
 <li>gem 'tty-prompt'</li>
 <li>gem 'pastel'</li>
 
