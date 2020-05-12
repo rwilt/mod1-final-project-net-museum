@@ -35,7 +35,7 @@ Create and update a list of your favorite artists and pieces. View highlights fr
   <li>Fork and clone this repo</li>
   <li>Navigate to this directory</li>
   <li>'bundle install' for all required gems</li>
-
+  <li>'rake db:seed' to seed the data</li>
   <li>'ruby bin/run.rb'</li>
 </ul>
 
