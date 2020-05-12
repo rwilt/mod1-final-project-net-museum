@@ -25,7 +25,7 @@ Create and update a list of your favorite artists and pieces. View highlights fr
 <li>gem 'down'</li>
 <li>gem 'tty-prompt'</li>
 <li>gem 'pastel'</li>
-
+<br>
 <i>NOTE: In addition to these gems, you will also need to install ImageMagick.</i>
 </ul>
 
