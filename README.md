@@ -58,8 +58,11 @@ Happy exploring!
 
 
 <h2>Screenshots/Video</h2>
+<br>
+<img src="./exampleimg5.png" alt="screenshot of project" height=300px>
 
-<img src="./exampleimg3.png" alt="screenshot of project" height=400px>
-<img src="./exampleimg4.png" alt="screenshot of project" height=400px>
+<img src="./exampleimg3.png" alt="screenshot of project" height=300px>
+
+<img src="./exampleimg4.png" alt="screenshot of project" height=300px>
 
 
